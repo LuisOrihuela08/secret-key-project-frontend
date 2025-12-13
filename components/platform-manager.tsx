@@ -19,17 +19,24 @@ export function PlatformManager({ currentUser, onLogout }: PlatformManagerProps)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingPlatform, setEditingPlatform] = useState<PlatformCredential | null>(null)
   
-  
-  // Usar el hook personalizado para manejar las plataformas
   const {
     platforms,
     loading,
     error,
+
+    page,
+    totalPages,
+    totalElements,
+
     createPlatform,
     deletePlatform,
     updatePlatform,
     findByName,
-    refetch
+    exportPlatformsToExcel,
+    exportPlatformsToPdf,
+    refetch,
+    fetchPlatforms
+    
   } = usePlatforms()
 
   const handleAddPlatform = async (platform: Omit<PlatformCredential, "id" | "createdDate">) => {
@@ -117,6 +124,44 @@ export function PlatformManager({ currentUser, onLogout }: PlatformManagerProps)
     return await findByName(name)
   }
 
+  const handleExportToExcel = async () => {
+    try {
+      const blob = await exportPlatformsToExcel()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "lista-plataformas.xlsx";
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error("Error al exportar plataformas a Excel: ", err)
+      alert(err instanceof Error ? err.message : "Error al exportar las plataformas")
+    }
+  }
+
+  const handleExporToPdf = async () => {
+    try {
+      const blob = await exportPlatformsToPdf()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "lista-plataformas.pdf";
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err){
+      console.error("Error al exportar plataformas a PDF: ", err);
+      alert(err instanceof Error ? err.message : "Error al exportar las plataformas")
+    }
+  }
+
+  const handlePageChange = (newPage: number) => {
+    fetchPlatforms(newPage);
+  }
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -128,7 +173,7 @@ export function PlatformManager({ currentUser, onLogout }: PlatformManagerProps)
                 <Lock className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-foreground">Gestor de Credenciales</h1>
+                <h1 className="text-2xl font-semibold text-foreground">Secret Key - Gestor de credenciales</h1>
                 <p className="text-sm text-muted-foreground">Bienvenido, {currentUser}</p>
               </div>
             </div>
@@ -167,6 +212,12 @@ export function PlatformManager({ currentUser, onLogout }: PlatformManagerProps)
           onDelete={handleDeletePlatform} 
           onUpdate={handleEditClick}
           onFindByName={handleFindByName}
+          exportToExcel={handleExportToExcel}
+          exportToPdf={handleExporToPdf}
+          currentPage={page}
+          totalPages={totalPages}
+          totalElements={totalElements}
+          onPageChange={handlePageChange}
           loading={loading}
         />
       </div>

@@ -95,6 +95,33 @@ export function usePlatforms() {
         }
     };
 
+    const exportPlatformsToExcel = async (): Promise<Blob> => {
+        try {
+            setError(null);
+            const blob = await platformService.exportPlarformsToExcel();
+            console.log('Exportación a Excel iniciada');
+            return blob;
+
+        } catch (err) {
+            const errorMessage = err instanceof Error? err.message: 'Error al exportar las plataformas';
+            setError(errorMessage);
+            throw err;
+        }
+    }
+
+    const exportPlatformsToPdf = async (): Promise<Blob> => {
+        try {
+            setError(null);
+            const blob = await platformService.exportPlatformsToPdf();
+            console.log('Exportación a PDF iniciada');
+            return blob;
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Error al exportar las plataformas';
+            setError(errorMessage);
+            throw err;
+        }
+    }
+
     useEffect(() => {
         const token = authService.getToken();
         if (token) {
@@ -116,6 +143,8 @@ export function usePlatforms() {
         createPlatform,
         updatePlatform,
         deletePlatform,
+        exportPlatformsToExcel,
+        exportPlatformsToPdf,
         refetch: fetchPlatforms,
     };
 }

@@ -5,12 +5,14 @@ export const API_ENDPOINTS = {
     register: '/api/auth/register',
     login: '/api/auth/login',
   },
-  // Aquí puedes agregar más endpoints en el futuro
+  
   platforms: {
     list: '/v1/secret-key/platform/',
     create: '/v1/secret-key/platform/',
     findByname: (name:string) => `/v1/secret-key/platform/name?name=${encodeURIComponent(name)}`,
     update: (id: string) => `/v1/secret-key/platform/${id}`,
     delete: (id: string) => `/v1/secret-key/platform/${id}`,
+    exportExcel: '/v1/secret-key/platform/export/excel',
+    exportPdf: '/v1/secret-key/platform/export/pdf',
   },
 };

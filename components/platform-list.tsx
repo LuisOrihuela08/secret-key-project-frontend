@@ -13,10 +13,17 @@ interface PlatformListProps {
   onDelete: (id: string) => void
   onUpdate: (platform: PlatformCredential) => void
   onFindByName: (name: string) => Promise<PlatformCredential>
+  exportToExcel: () => Promise<void>
+  exportToPdf: () => Promise<void>
   loading?: boolean
+
+  currentPage: number
+  totalPages: number
+  totalElements: number
+  onPageChange: (newPage: number) => void
 }
 
-export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, loading = false }: PlatformListProps) {
+export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, exportToExcel, exportToPdf, loading = false, currentPage, totalPages, totalElements, onPageChange }: PlatformListProps) {
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set())
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -86,7 +93,7 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, load
     setSearchError(null)
 
     try {
-      /*const formattedName = formatSearchTerm(searchTerm, 'capitalize')*/
+
       const result = await onFindByName(searchTerm.trim())
       setSearchResult(result)
     } catch (err) {
@@ -111,7 +118,7 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, load
 
   const platformsToDisplay = searchResult ? [searchResult] : platforms
 
-  // Mostrar skeleton mientras carga
+  //skeleton mientras carga
   if (loading) {
     return (
       <div>
@@ -191,11 +198,11 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, load
             */}
         </div>
         <div className="flex gap-2">
-          <Button className="gap-2 bg-red-500 hover:bg-red-700 text-white">
+          <Button className="gap-2 bg-red-500 hover:bg-red-700 text-white" onClick={exportToPdf}>
             <Download className="h-5 w-5" />
             PDF
           </Button>
-          <Button className="gap-2 bg-green-500 hover:bg-green-700 text-white">
+          <Button className="gap-2 bg-green-500 hover:bg-green-700 text-white" onClick={exportToExcel}>
             <Download className="h-5 w-5" />
             Excel
           </Button>
@@ -312,13 +319,110 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, load
                     </Button>
                   </div>
                 </CardFooter>
-
-
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+
+      {/* Paginación */}
+      {!searchResult && totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {platforms.length > 0 ? (currentPage * 9) + 1 : 0} - {Math.min((currentPage + 1) * 9, totalElements)} de {totalElements} plataformas
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Botón Anterior */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 0}
+              className="gap-2"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Anterior
+            </Button>
+
+            {/* Números de página */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => {
+                // Mostrar solo algunas páginas alrededor de la página actual
+                if (
+                  i === 0 || // Primera página
+                  i === totalPages - 1 || // Última página
+                  (i >= currentPage - 1 && i <= currentPage + 1) // Páginas cercanas
+                ) {
+                  return (
+                    <Button
+                      key={i}
+                      variant={currentPage === i ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onPageChange(i)}
+                      className="min-w-[40px]"
+                    >
+                      {i + 1}
+                    </Button>
+                  )
+                } else if (
+                  i === currentPage - 2 ||
+                  i === currentPage + 2
+                ) {
+                  return <span key={i} className="px-2 text-muted-foreground">...</span>
+                }
+                return null
+              })}
+            </div>
+
+            {/* Botón Siguiente */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages - 1}
+              className="gap-2"
+            >
+              Siguiente
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Button>
+          </div>
+        </div>
+      )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   )
 }

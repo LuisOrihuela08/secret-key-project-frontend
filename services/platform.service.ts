@@ -16,35 +16,41 @@ class PlatformService {
         };
     }
 
-    async getPlatformsPaginated(page: number = 0, size: number = 10): Promise<PageResponse<PlatformCredential>> {
+    private getFileHeaders(): HeadersInit {
+        const token = authService.getToken();
+        if (!token) {
+            throw new Error('No autenticado');
+
+        }
+        return {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        };
+    }
+
+    async getPlatformsPaginated(page: number = 0, size: number = 9): Promise<PageResponse<PlatformCredential>> {
         try {
             const token = authService.getToken();
-            //console.log('Token disponible:', token ? 'SÍ' : 'NO');
             console.log('Token:', token?.substring(0, 20) + '...');
 
             const url = `${API_BASE_URL}${API_ENDPOINTS.platforms.list}?page=${page}&size=${size}`;
-            //console.log('URL:', url);
 
             const headers = this.getHeaders();
-            ////console.log('Headers:', headers);
 
             const response = await fetch(url, {
                 method: 'GET',
                 headers: headers,
             });
 
-            //console.log('Response status:', response.status);
-            //console.log('Response ok:', response.ok);
-
             if (!response.ok) {
-                // Manejar diferentes códigos de error
+               
                 if (response.status === 401) {
                     authService.logout();
                     throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.');
                 }
 
                 if (response.status === 204 || response.status === 404) {
-                    // No hay plataformas registradas
+                   
                     return {
                         content: [],
                         totalPages: 0,
@@ -87,7 +93,7 @@ class PlatformService {
                 method: 'GET',
                 headers: this.getHeaders()
             });
-            
+
             if (!response.ok) {
                 if (response.status === 401) {
                     authService.logout();
@@ -188,6 +194,53 @@ class PlatformService {
         }
     }
 
+    async exportPlarformsToExcel(): Promise<Blob> {
+        try {
+            const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.platforms.exportExcel}`, {
+                method: 'GET',
+                headers: this.getFileHeaders(),
+            });
+            if (!response.ok) {
+                if (response.status === 401) {
+                    authService.logout();
+                    throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.');
+                }
+                const error = await response.json().catch(() => ({
+                    message: 'Error al exportar Excel de las plataformas'
+                }));
+                throw new Error(error.message || 'Error al exportar excel las plataformas');
+            }
+            const blob = await response.blob();
+            return blob;
+        } catch (error) {
+            console.error('Error en exportar excel de las plataformas: ', error);
+            throw error;
+        }
+    }
+
+    async exportPlatformsToPdf(): Promise<Blob> {
+        try {
+            const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.platforms.exportPdf}`, {
+                method: 'GET',
+                headers: this.getFileHeaders(),
+            });
+            if (!response.ok) {
+                if (response.status === 401) {
+                    authService.logout();
+                    throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.');
+                }
+                const error = await response.json().catch(() => ({
+                    message: 'Error al exportar Pdf de las plataformas'
+                }));
+                throw new Error(error.message || 'Error al exportar PDF las plataformas');
+            }
+            const blob = await response.blob();
+            return blob;
+        } catch (error) {
+            console.error('Error en exportar pdf de las plataformas: ', error);
+            throw error;
+        }
+    }
 
 }
 
