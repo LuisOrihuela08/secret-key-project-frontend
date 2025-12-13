@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build outputs (por si usas otras herramientas)
+dist/
+build/
+
+# Turbopack/Turbo
+.turbo/
+
+# Vercel
+.vercel/
+
+# Coverage / tests
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Env files (no subir secretos)
+.env
+.env.*
+!.env.example
+
+# Cache (linters, bundlers, etc.)
+.eslintcache
+.cache/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
