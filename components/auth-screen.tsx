@@ -78,7 +78,8 @@ export function AuthScreen({ onLogin }: AuthScreenProps) {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">
             <Lock className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Gestor de Credenciales</h1>
+          <h1 className="text-3xl font-bold text-foreground text-primary">Secret Key</h1>
+          <h1 className="text-1xl font-bold text-foreground">Gestor de Credenciales</h1>
           <p className="mt-2 text-muted-foreground">Administra tus plataformas de forma segura</p>
         </div>
 

@@ -144,7 +144,7 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, expo
         <p className="text-sm text-muted-foreground">
           {platforms.length === 0
             ? "No hay plataformas registradas"
-            : `${platforms.length} plataforma${platforms.length !== 1 ? "s" : ""} registrada${platforms.length !== 1 ? "s" : ""}`}
+            : `${totalElements} plataforma${totalElements !== 1 ? "s" : ""} registrada${totalElements !== 1 ? "s" : ""}`}
         </p>
       </div>
       {/* Barra de búsqueda y botones de exportación */}
