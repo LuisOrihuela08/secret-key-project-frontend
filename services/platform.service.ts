@@ -31,7 +31,7 @@ class PlatformService {
     async getPlatformsPaginated(page: number = 0, size: number = 9): Promise<PageResponse<PlatformCredential>> {
         try {
             const token = authService.getToken();
-            console.log('Token:', token?.substring(0, 20) + '...');
+           // console.log('Token:', token?.substring(0, 20) + '...');
 
             const url = `${API_BASE_URL}${API_ENDPOINTS.platforms.list}?page=${page}&size=${size}`;
 

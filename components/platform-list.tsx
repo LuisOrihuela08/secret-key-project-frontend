@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Trash2, Eye, EyeOff, ExternalLink, Copy, Check, Loader2, Edit, Download, X, Search } from "lucide-react"
 import type { PlatformCredential } from "@/types/platform"
 import { Input } from "./ui/input"
+import { DeleteConfirmationDialog } from "./ui/delete-confirmation-dialog"
 
 interface PlatformListProps {
   platforms: PlatformCredential[]
@@ -30,6 +31,8 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, expo
   const [searching, setSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<PlatformCredential | null>(null)
   const [searchError, setSearchError] = useState<string | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [platformToDelete, setPlatformToDelete] = useState<{ id: string; name: string } | null>(null)
 
   const togglePasswordVisibility = (id: string) => {
     const newVisible = new Set(visiblePasswords)
@@ -113,6 +116,19 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, expo
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch()
+    }
+  }
+
+  const handleDeleteClick = (platform: PlatformCredential) => {
+    setPlatformToDelete({id: platform.id, name: platform.name})
+    setDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if(platformToDelete){
+      onDelete(platformToDelete.id)
+      setDeleteDialogOpen(false)
+      setPlatformToDelete(null)
     }
   }
 
@@ -311,7 +327,8 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, expo
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onDelete(platform.id)}
+                     /* onClick={() => onDelete(platform.id)}*/
+                     onClick={ () => handleDeleteClick(platform)}
                       className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
@@ -395,33 +412,13 @@ export function PlatformList({ platforms, onDelete, onUpdate, onFindByName, expo
         </div>
       )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        platformName={platformToDelete?.name || ""}
+      />
 
     </div>
   )

@@ -38,7 +38,7 @@ export function AuthScreen({ onLogin }: AuthScreenProps) {
       if (isLogin) {
         // Login con backend
         const response = await authService.login({ username, password })
-        console.log("Login exitoso:", response)
+       //console.log("Login exitoso:", response)
         onLogin(response.username)
       } else {
         // Register con backend
@@ -55,7 +55,7 @@ export function AuthScreen({ onLogin }: AuthScreenProps) {
         }
 
         const response = await authService.register({ username, password })
-        console.log("Registro exitoso:", response)
+        //console.log("Registro exitoso:", response)
         onLogin(response.username)
       }
     } catch (err) {

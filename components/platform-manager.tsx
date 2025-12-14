@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { usePlatforms } from "@/hooks/usePlatforms"
 import { authService } from "@/services/auth.service"
 import type { PlatformCredentialDTO, PlatformCredential } from "@/types/platform"
-import { platform } from "os"
 
 interface PlatformManagerProps {
   currentUser: string
@@ -57,14 +56,12 @@ export function PlatformManager({ currentUser, onLogout }: PlatformManagerProps)
   }
 
   const handleDeletePlatform = async (id: string) => {
-    if (!confirm("¿Estás seguro de eliminar esta plataforma?")) {
-      return
-    }
-
     try {
       await deletePlatform(id)
+      console.log("Plataforma eliminada!")
+
     } catch (err) {
-      console.error("Error al eliminar plataforma:", err)
+      console.error("Error al eliminar la plataforma: ", err)
       alert(err instanceof Error ? err.message : "Error al eliminar la plataforma")
     }
   }
