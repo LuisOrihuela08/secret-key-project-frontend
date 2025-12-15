@@ -9,6 +9,7 @@ const nextConfig = {
   experimental: {
     devToolbar: false,
   },
+  output: 'standalone',
 }
 
 export default nextConfig
