@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   description: 'Gestor de credenciales',
   generator: 'Next.js',
   icons: {
+    icon: '/secret-key-logo.png',
+    apple: '/secret-key-logo.png',
+  }
+  /*
+  icons: {
     icon: [
       {
         url: '/icon-light-32x32.png',
@@ -27,6 +32,7 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-icon.png',
   },
+  */
 }
 
 export default function RootLayout({

@@ -6,6 +6,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    devToolbar: false,
+  },
 }
 
 export default nextConfig
