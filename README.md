@@ -1,10 +1,8 @@
 <h1 align="center"> 🔐 Secret Key Project - Credential Manager </h1>
 <div align="center">
   <img width="633" height="633" alt="Image" src="https://github.com/user-attachments/assets/9288d393-fc92-421d-a9ec-1e159a1433ce" />
+  <h2>This project allows you to manage your credentials securely</h2>
 </div>
-
-
-This project allows you to manage your credentials securely.
 
 ## ✨ Features
 - Custom credential management
